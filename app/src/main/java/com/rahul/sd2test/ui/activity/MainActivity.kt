@@ -1,11 +1,13 @@
 package com.rahul.sd2test.ui.activity
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rahul.sd2test.MyApp
 import com.rahul.sd2test.R
 import com.rahul.sd2test.modal.User
+import com.rahul.sd2test.modal.UsersResponse
 import com.rahul.sd2test.presenter.activity.MainActivityPresenter
 import com.rahul.sd2test.repository.GetUserCallback
 import com.rahul.sd2test.ui.adapter.UserAdapter
@@ -19,6 +21,7 @@ class MainActivity : BaseActivity() {
     val arrayList = ArrayList<User>()
     lateinit var userAdapter: UserAdapter
     lateinit var userCallback: GetUserCallback
+    var recyclerViewScrollFix = false
 
     val presenter: MainActivityPresenter by inject()
 
@@ -56,12 +59,12 @@ class MainActivity : BaseActivity() {
 
         userCallback = object : GetUserCallback {
 
-            override fun onSuccess() {
-
+            override fun onSuccess(usersResponse: UsersResponse) {
+                showUserData(usersResponse)
             }
 
             override fun onFail() {
-
+                toggleProgressBar(false)
             }
         }
     }
@@ -85,13 +88,70 @@ class MainActivity : BaseActivity() {
 
     fun areAllItemsLoaded(): Boolean {
         if (!hasMoreItems) {
-            Toast.makeText(
-                this@MainActivity,
-                MyApp.INSTANCE.getString(R.string.all_items_loaded),
-                Toast.LENGTH_SHORT
-            ).show()
+            showAllItemsLoaded()
             return true
         }
         return false
+    }
+
+    fun showUserData(usersResponse: UsersResponse) {
+        toggleProgressBar(false)
+
+        if (arrayList.size == 0) {
+            recyclerViewScrollFix = false
+        }
+
+        val users = usersResponse.data.users
+        hasMoreItems = usersResponse.data.hasMore
+        if (users.size == 0) {
+
+            showAllItemsLoaded()
+
+            //disable progress bar
+            if (arrayList.size > 0) {
+                val lastIndex = arrayList.size - 1
+                if (arrayList[lastIndex].loadMore) {
+                    arrayList.removeAt(lastIndex)
+                    rv.post { userAdapter.notifyItemRemoved(lastIndex) }
+                }
+            }
+
+        } else {
+
+            if (arrayList.size > 0) {
+                val lastIndex = arrayList.size - 1
+                if (arrayList[lastIndex].loadMore) {
+                    arrayList.removeAt(lastIndex)
+                    rv.post { userAdapter.notifyItemRemoved(lastIndex) }
+                }
+            }
+
+            val prevPos = arrayList.size
+            arrayList.addAll(users)
+            rv.post { userAdapter.notifyItemRangeInserted(prevPos, arrayList.size) }
+
+        }
+
+        if (!recyclerViewScrollFix) {
+            rv.postDelayed({
+                rv.scrollToPosition(0)
+                recyclerViewScrollFix = true
+            }, 200)
+        }
+    }
+
+    fun showAllItemsLoaded() {
+        Toast.makeText(
+            this@MainActivity,
+            MyApp.INSTANCE.getString(R.string.all_items_loaded),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    fun toggleProgressBar(show: Boolean) {
+        if (show)
+            progressBar.visibility = View.VISIBLE
+        else
+            progressBar.visibility = View.GONE
     }
 }

@@ -18,11 +18,9 @@ class UserRepositoryImpl(val apiService: ApiService) : UserRepository {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                callback.onSuccess()
-                Log.d("Hello", "Success")
+                callback.onSuccess(it)
             }, {
                 callback.onFail()
-                Log.d("Hello", "Success")
             })
     }
 
