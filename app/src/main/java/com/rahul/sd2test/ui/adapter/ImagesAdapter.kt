@@ -1,4 +1,4 @@
-package com.rahul.sd2test.adapter
+package com.rahul.sd2test.ui.adapter
 
 import android.content.Context
 import android.view.LayoutInflater

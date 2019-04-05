@@ -1,6 +1,5 @@
 package com.rahul.sd2test.ui.viewHolder
 
-import android.media.Image
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
@@ -8,7 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mikhaellopez.circularimageview.CircularImageView
 import com.rahul.sd2test.R
-import com.rahul.sd2test.adapter.ImagesAdapter
+import com.rahul.sd2test.ui.adapter.ImagesAdapter
 import java.util.*
 
 class EvenHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

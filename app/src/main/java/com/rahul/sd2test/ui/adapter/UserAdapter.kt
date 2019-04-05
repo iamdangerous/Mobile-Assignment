@@ -1,4 +1,4 @@
-package com.rahul.sd2test.adapter
+package com.rahul.sd2test.ui.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -19,7 +19,7 @@ class UserAdapter(private val context: Context, internal var arrayList: ArrayLis
     private val TYPE_LOAD_MORE = 3
     private var iUserAdapter: IUserAdapter? = null
 
-    fun setiUserAdapter(iUserAdapter: IUserAdapter) {
+    fun setCallback(iUserAdapter: IUserAdapter) {
         this.iUserAdapter = iUserAdapter
     }
 
