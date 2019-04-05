@@ -154,4 +154,9 @@ class MainActivity : BaseActivity() {
         else
             progressBar.visibility = View.GONE
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.cancel()
+    }
 }
