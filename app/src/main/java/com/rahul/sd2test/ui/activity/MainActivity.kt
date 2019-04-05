@@ -34,17 +34,17 @@ class MainActivity : BaseActivity() {
         getData()
     }
 
-    fun initUi() {
+    private fun initUi() {
         rv.layoutManager = LinearLayoutManager(this)
         userAdapter = UserAdapter(this, arrayList)
         rv.adapter = userAdapter
     }
 
-    fun getData() {
+    private fun getData() {
         presenter.getUsersFromApi(arrayList.size, DEFAULT_LIMIT, userCallback)
     }
 
-    fun addListeners() {
+    private fun addListeners() {
         userAdapter.setCallback(object : UserAdapter.IUserAdapter {
             override fun loadMore() {
                 if (areAllItemsLoaded()) {
@@ -69,14 +69,14 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    fun addProgressBarOnLastItem() {
+    private fun addProgressBarOnLastItem() {
         val user = User()
         user.loadMore = true
         arrayList.add(user)
         rv.post { userAdapter.notifyItemInserted(arrayList.size - 1) }
     }
 
-    fun isLoaderAlreadyShowing(): Boolean {
+    private fun isLoaderAlreadyShowing(): Boolean {
         if (arrayList.size > 0) {
             val lastIndex = arrayList.size - 1
             if (arrayList[lastIndex].loadMore) {
@@ -86,15 +86,14 @@ class MainActivity : BaseActivity() {
         return false
     }
 
-    fun areAllItemsLoaded(): Boolean {
+    private fun areAllItemsLoaded(): Boolean {
         if (!hasMoreItems) {
-            showAllItemsLoaded()
             return true
         }
         return false
     }
 
-    fun showUserData(usersResponse: UsersResponse) {
+    private fun showUserData(usersResponse: UsersResponse) {
         toggleProgressBar(false)
 
         if (arrayList.size == 0) {
@@ -104,8 +103,6 @@ class MainActivity : BaseActivity() {
         val users = usersResponse.data.users
         hasMoreItems = usersResponse.data.hasMore
         if (users.size == 0) {
-
-            showAllItemsLoaded()
 
             //disable progress bar
             if (arrayList.size > 0) {
@@ -140,15 +137,7 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    fun showAllItemsLoaded() {
-        Toast.makeText(
-            this@MainActivity,
-            MyApp.INSTANCE.getString(R.string.all_items_loaded),
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-
-    fun toggleProgressBar(show: Boolean) {
+    private fun toggleProgressBar(show: Boolean) {
         if (show)
             progressBar.visibility = View.VISIBLE
         else
