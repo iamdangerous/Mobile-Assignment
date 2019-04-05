@@ -6,10 +6,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.rahul.sd2test.R
 import com.rahul.sd2test.modal.User
 import com.rahul.sd2test.presenter.activity.MainActivityPresenter
-import com.rahul.sd2test.repository.UserRepositoryImpl
+import com.rahul.sd2test.repository.GetUserCallback
 import com.rahul.sd2test.ui.adapter.UserAdapter
-import com.rahul.sd2test.webService.ApiService
 import kotlinx.android.synthetic.main.activity_main.*
+import org.koin.android.ext.android.inject
 import java.util.*
 
 class MainActivity : BaseActivity() {
@@ -17,6 +17,9 @@ class MainActivity : BaseActivity() {
     var hasMoreItems = true
     val arrayList = ArrayList<User>()
     lateinit var userAdapter: UserAdapter
+    lateinit var userCallback: GetUserCallback
+
+    val presenter: MainActivityPresenter by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,16 +27,11 @@ class MainActivity : BaseActivity() {
 
         initUi()
         addListeners()
+        presenter.getUsersFromApi(arrayList.size, DEFAULT_LIMIT, userCallback)
     }
 
     fun initUi() {
-
         rv.layoutManager = LinearLayoutManager(this)
-
-//        val apiService = ApiService()
-//        val presenter = MainActivityPresenter()
-//        val repository = UserRepositoryImpl()
-
         userAdapter = UserAdapter(this, arrayList)
         rv.adapter = userAdapter
     }
@@ -47,12 +45,23 @@ class MainActivity : BaseActivity() {
                     return
                 }
 
-                if(!isLoaderAlreadyShowing()){
-//                    getUsersFromApi(arrayList.size, DEFAULT_LIMIT)
+                if (!isLoaderAlreadyShowing()) {
+                    presenter.getUsersFromApi(arrayList.size, DEFAULT_LIMIT, userCallback)
                     addProgressBarOnLastItem()
                 }
             }
         })
+
+        userCallback = object :GetUserCallback{
+
+            override fun onSuccess() {
+
+            }
+
+            override fun onFail() {
+
+            }
+        }
     }
 
     fun addProgressBarOnLastItem() {
@@ -62,7 +71,7 @@ class MainActivity : BaseActivity() {
         rv.post { userAdapter.notifyItemInserted(arrayList.size - 1) }
     }
 
-    fun isLoaderAlreadyShowing():Boolean {
+    fun isLoaderAlreadyShowing(): Boolean {
         if (arrayList.size > 0) {
             val lastIndex = arrayList.size - 1
             if (arrayList[lastIndex].loadMore) {
