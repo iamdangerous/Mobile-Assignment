@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Sd2Test</string>
+    <string name="all_items_loaded">All items loaded</string>
 </resources>

@@ -3,6 +3,7 @@ package com.rahul.sd2test.ui.activity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.rahul.sd2test.MyApp
 import com.rahul.sd2test.R
 import com.rahul.sd2test.modal.User
 import com.rahul.sd2test.presenter.activity.MainActivityPresenter
@@ -27,7 +28,7 @@ class MainActivity : BaseActivity() {
 
         initUi()
         addListeners()
-        presenter.getUsersFromApi(arrayList.size, DEFAULT_LIMIT, userCallback)
+        getData()
     }
 
     fun initUi() {
@@ -36,23 +37,24 @@ class MainActivity : BaseActivity() {
         rv.adapter = userAdapter
     }
 
+    fun getData() {
+        presenter.getUsersFromApi(arrayList.size, DEFAULT_LIMIT, userCallback)
+    }
+
     fun addListeners() {
         userAdapter.setCallback(object : UserAdapter.IUserAdapter {
             override fun loadMore() {
-
-                if (!hasMoreItems) {
-                    Toast.makeText(this@MainActivity, "All items loaded", Toast.LENGTH_SHORT).show()
+                if (areAllItemsLoaded()) {
                     return
                 }
-
                 if (!isLoaderAlreadyShowing()) {
-                    presenter.getUsersFromApi(arrayList.size, DEFAULT_LIMIT, userCallback)
+                    getData()
                     addProgressBarOnLastItem()
                 }
             }
         })
 
-        userCallback = object :GetUserCallback{
+        userCallback = object : GetUserCallback {
 
             override fun onSuccess() {
 
@@ -77,6 +79,18 @@ class MainActivity : BaseActivity() {
             if (arrayList[lastIndex].loadMore) {
                 return true
             }
+        }
+        return false
+    }
+
+    fun areAllItemsLoaded(): Boolean {
+        if (!hasMoreItems) {
+            Toast.makeText(
+                this@MainActivity,
+                MyApp.INSTANCE.getString(R.string.all_items_loaded),
+                Toast.LENGTH_SHORT
+            ).show()
+            return true
         }
         return false
     }
