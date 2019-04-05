@@ -24,7 +24,7 @@ class ImagesAdapter(private val context: Context, internal var arrayList: ArrayL
         val imagesHolder = holder as ImagesHolder
         val url = arrayList[position]
 
-        Glide.with(context)
+        Glide.with(imagesHolder.imageView)
             .load(url)
             .placeholder(ContextCompat.getDrawable(context, R.drawable.placeholder))
             .into(imagesHolder.imageView)

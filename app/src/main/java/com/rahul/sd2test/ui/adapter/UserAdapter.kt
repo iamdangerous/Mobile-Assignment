@@ -54,13 +54,13 @@ class UserAdapter(private val context: Context, internal var arrayList: ArrayLis
                     evenHolder.init(images)
                 }
                 evenHolder.imageViewBig.visibility = View.VISIBLE
-                Glide.with(context)
+                Glide.with(evenHolder.imageViewBig)
                     .load(user.items[0])
                     .placeholder(ContextCompat.getDrawable(context, R.drawable.placeholder))
                     .into(evenHolder.imageViewBig)
 
             }
-            Glide.with(context)
+            Glide.with(evenHolder.imageViewSmall)
                 .load(user.image)
                 .placeholder(ContextCompat.getDrawable(context, R.drawable.circle_placeholder))
                 .into(evenHolder.imageViewSmall)
