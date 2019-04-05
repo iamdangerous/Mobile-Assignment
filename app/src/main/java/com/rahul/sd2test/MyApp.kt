@@ -8,7 +8,7 @@ import com.rahul.sd2test.presenter.app.ApplicationPresenter
 import com.rahul.sd2test.webService.ApiService
 import okhttp3.OkHttpClient
 
-class MyApp:Application() {
+class MyApp : Application() {
     companion object {
         lateinit var INSTANCE: Application
         var BEARER_TOKEN = ""
